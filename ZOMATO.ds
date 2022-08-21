@@ -1,0 +1,915 @@
+/*
+ * Author       : FaraazAhmed
+ * Generated on : 14-Aug-2022 01:15:31
+ * Version      : 1.0
+ */
+ application "ZOMATO"
+ {
+ 	date format = "dd-MMM-yyyy"
+ 	time zone = "Asia/Kolkata"
+ 	time format = "24-hr"
+	section Menus
+	{
+		icon = "food-barbecue-tools"
+		form Menus
+		{
+			success message = "Menu Added Successfully"
+			field alignment = top
+					hide = true
+			Section
+			(
+				type = section
+	 			row = 1
+	 			column = 0   
+				width = medium
+			)
+			must have Food_Name
+			(
+    			type = text
+				displayname = "Food Name"
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			must have Item_Price
+			(
+				displayname = "Item Price"
+				type = INR
+				format = commadotindian
+				initial value = 0
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			must have Categories
+			(
+				type = picklist
+				maxchar = 100
+				values = {"Non Vegetarian", "Vegetarian"}
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			must have Food_Image
+			(
+    			type = image
+				displayname = "Food Image"
+				source  = file
+				aspect ratio = original
+				camera = primary
+				show gallery = true
+				switch camera = true
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			must have Description
+			(
+    			type = textarea
+				height = 150px
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+	
+			customize
+			(
+				icon = "food-barbecue-tools"
+			)
+			actions
+			{
+				on add
+				{
+					submit
+					(
+   						type = submit
+   						displayname = "Submit"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		print template
+			{
+				invoice_template
+				{
+						displayname = "invoice template"
+						content = {"layout":"1","pageNumberOption":null,"orientation":"null","isFooterEnabled":false,"containerStyle":"","mainLayout":[{"elements":[{"type":"columns","element":{"split":"100","id":"u_elem_9942090000009537","elemStyle":"","collayouts":[{"colElements":[{"type":"text","element":{"id":"u_elem_7587590000009537","fields":[],"content":"<div style=\"background: rgba(0, 0, 0, 0); padding: 0px\">\n   <h1\n      style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><font style=\"font-size: 28px\">ORDER INVOICE.<\/font><\/h1>\n  <\/div>"}}]}]}},{"type":"columns","element":{"split":"100","id":"u_elem_10722860000002384","elemStyle":"","collayouts":[{"colElements":[{"type":"text","element":{"id":"u_elem_9942070000004768","fields":[],"content":"<div style=\"background: rgba(0, 0, 0, 0); padding: 0px\">\n   <p style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\">Invoice regarding the order you&#39;ve placed.<\/p>\n  <\/div>"}},{"id":"u_elem_129850732917423305","type":"fields","element":{"valueStyle":"width: 50%","valueTextStyle":"","fieldLayoutType":"2","labelText":"ID","wrapperStyle":"","labelStyle":"width: 50%","Label_Name":"ID","labelTextStyle":""}}]}]}},{"type":"columns","element":{"split":"100","id":"u_elem_20461980000007153","elemStyle":"","collayouts":[{"colElements":[{"id":"u_elem_129850732917433489","type":"fields","element":{"valueStyle":"width: 50%","valueTextStyle":"","fieldLayoutType":"2","labelText":"Food Name","wrapperStyle":"","labelStyle":"width: 50%","Label_Name":"Food_Name","labelTextStyle":""}},{"id":"u_elem_129850732917434908","type":"fields","element":{"valueStyle":"width: 50%","valueTextStyle":"","fieldLayoutType":"2","labelText":"Item Price","wrapperStyle":"","labelStyle":"width: 50%","Label_Name":"Item_Price","labelTextStyle":""}}]}]}}],"id":1}],"resize":"a4","themeFont":"lato","templateStyle":"text-align: left; width: 793.7px; background-image: none","isHeaderEnabled":false,"version":"2"}
+				}
+			}
+		}
+		default custom All_Menus
+		{
+			displayName = "All Menus"
+			print template = invoice_template
+			show all rows from Menus    
+			(
+				Food_Name as "Food Name"
+				Item_Price as "Item Price"
+				Categories
+				Food_Image as "Food Image"
+				Description
+				custom action "Buy Now"
+				(
+	  			workflow = Buy_Now
+				show action in edit record menu = true
+				column header = "Buy Now"
+				confirmation before execution
+				(
+					message for individual record = "Are you sure you want to proceed with the order?"
+					confirm button text = "Proceed "		
+					cancel button text = "Cancel"
+				)
+				)
+			)
+			filters
+			(
+				Categories
+			)
+			group by
+			(
+				Categories ascending
+			)
+			options
+			(
+				icon = "travel-world"
+	 		)
+			conditional formatting
+			(
+				"Zomato"
+				{
+				format = "color:#ffffff;background-color:#e84c3d;"
+				}
+				"New Formatting"
+				{
+				fields = [Item_Price]
+				format = "color:#ffffff;background-color:#e84c3d;"
+				}
+				"New Formatting"
+				{
+				condition = (Categories == "Non Vegetarian")
+				fields = [Categories]
+				format = "color:#ef1616;"
+				}
+				"New Formatting"
+				{
+				condition = (Categories == "Vegetarian")
+				fields = [Categories]
+				format = "color:#5dc35a;"
+				}
+			)
+			quickview
+			(
+				layout
+				(
+		 			customlayouts
+	     			(
+		 				template
+		 				(
+		 	  				displayname="Custom Layout 1"
+		 	  				content="<panel \n >\n	<pr \n			width='fill'\n		height='fill'\n>\n	<pc \n		padding = '20px'\n	bgColor = '#FFFFFF'\n\n		width = '100%'\n		hAlign = 'left'\n		vAlign = 'middle'\n>\n	<pr \n			width='fill'\n		height='fill'\n>\n	<pc \n		padding = '0px'\n	bgColor = 'transparent'\n\n		width = '7%'\n		hAlign = 'left'\n		vAlign = 'middle'\n>\n	<pr \n			width='auto'\n		height='auto'\n>\n	<pc \n	\n>\n	<image  \n	\n	color = '#FF6060'\n	type = 'icon'\n	value = 'ui-1-home-simple'\n	size = '24px'\n	cornerRadius = '0px'\n	iconType = 'solid'\n/>\n</pc>\n</pr>\n</pc><pc \n		paddingTop = '17px'\n	paddingLeft = '17px'\n	paddingRight = '0px'\n	paddingBottom = '17px'\n	bgColor = 'transparent'\n\n		width = '34%'\n		hAlign = 'center'\n>\n	<pr \n			width='auto'\n		height='auto'\n>\n	<pc \n	\n>\n	<image  \n	\n	color = '#000000'\n	type = 'icon'\n	value = 'arrows-4-download'\n	size = '22px'\n	iconType = 'outline'\n/>\n</pc>\n</pr>\n</pc><pc \n		paddingTop = '0px'\n	paddingLeft = '20px'\n	paddingRight = '0px'\n	paddingBottom = '0px'\n	bgColor = 'transparent'\n\n		width = '59%'\n		hAlign = 'right'\n		vAlign = 'middle'\n>\n	<pr \n			width='auto'\n		height='auto'\n>\n	<pc \n	\n>\n	<text \n\n	color = '#FF6060'\n	size = '16px'\n	uppercase = 'false' \n	underline = 'false' \n	bold = 'false' \n	italic = 'false' \n	type = 'field'\n\n\n\n	  \n      	lineHeight = '22'\n      	  numOfLines = '1'\n	  value = 'None'\n>\n</text>\n\n</pc>\n</pr>\n</pc>\n</pr><pr \n			width='fill'\n		height='fill'\n>\n	<pc \n		padding = '0px'\n	bgColor = 'transparent'\n\n		width = '100%'\n		hAlign = 'left'\n		vAlign = 'middle'\n>\n	<pr \n			width='auto'\n		height='auto'\n>\n	<pc \n		padding = '0px'\n\n		hAlign = 'left'\n>\n	<pr \n	>\n	<pc \n	\n>\n	<text \n\n	marginBottom = '6px'\n	marginTop = '12px'\n	color = '#000000'\n	size = '20px'\n	uppercase = 'false' \n	underline = 'false' \n	bold = 'true' \n	italic = 'false' \n	type = 'field'\n\n\n\n	  \n      	lineHeight = '28'\n      	  numOfLines = '1'\n	  value = 'None'\n>\n</text>\n\n</pc>\n</pr><pr \n	>\n	<pc \n	\n>\n	<text \n\n	marginLeft = '0px'\n	marginRight = '0px' \n	marginBottom = '0px'\n	marginTop = '0px'\n	color = '#111111'\n	size = '15px'\n	uppercase = 'false' \n	underline = 'false' \n	bold = 'false' \n	italic = 'false' \n	type = 'field'\n\n\n\n	  \n      	lineHeight = '21'\n      	  numOfLines = '3'\n	  value = 'None'\n>\n</text>\n\n</pc>\n</pr>\n</pc>\n</pr>\n</pc>\n</pr>\n</pc>\n</pr>\n</panel>"
+		    			)
+	     			)
+		 			type = 6
+					datablock1
+					(
+			 			layout type = 19
+						fields
+						(
+							Food_Image as "Food Image"
+							Food_Name as "Food Name"
+							Description
+							Categories
+							Item_Price as "Item Price"
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    		 			Duplicate 
+    		 			Delete 
+    	 			)
+							record
+							(
+								Edit   	   
+								Duplicate   	   
+								Delete   	   
+    						)
+    			)
+    			action
+    			(
+							on click
+							(
+								View Record   	   
+    						)
+							on right click
+							(
+								Edit   	   
+								Delete   	   
+								Duplicate   	   
+								View Record   	   
+    						)
+     			)
+			)
+			detailview
+			(
+				layout
+				(
+		 			type = 2
+					datablock1
+					(
+			 			layout type = -2
+		     			title = "Overview"
+						fields
+						(
+							Food_Image as "Food Image"
+							Food_Name as "Food Name"
+							Item_Price as "Item Price"
+							Categories
+							Description
+				"Buy Now" as "Order now"
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    		 			Duplicate 
+    		 			Delete 
+    	 			)
+    			)
+			)
+		}
+	}
+	section Order_Details
+	{
+		displayname= "Order Details"
+		icon = "shopping-basket-edit"
+		form Order_Details
+		{
+			displayname = "Order Details"
+			success message = "Hurray!!!! Your order has been placed successfully and You'll be receiving the confirmation shortly through mail"
+			field alignment = left
+					hide = true
+			Section
+			(
+				type = section
+	 			row = 1
+	 			column = 0   
+				width = medium
+			)
+			must have Name
+			(
+    			type = name
+     			prefix
+     			(
+	     			 type = prefix
+	     			 displayname ="Prefix"
+	     			 visibility = false
+	     			 value = {"Mr.", "Mrs.", "Ms."}
+     			) 
+     			first_name
+     			(
+	     			 type = first_name
+	     			 displayname ="First Name"
+     			) 
+     			last_name
+     			(
+	     			 type = last_name
+	     			 displayname ="Last Name"
+     			) 
+     			suffix
+     			(
+	     			 type = suffix
+	     			 displayname ="Suffix"
+	     			 visibility = false
+     			) 
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			must have Email
+			(
+    			type = email
+				maxchar = 80
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			must have Phone_Number
+			(
+    			type = phonenumber
+				displayname = "Phone"
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			must have Address
+			(
+    			type = address
+     			capture_coordinates = true
+     			adjust_using_map = false
+     			address_line_1
+     			(
+	     			  type = address_line_1
+	     			  displayname = "Address Line 1"
+     			) 
+     			address_line_2
+     			(
+	     			  type = address_line_2
+	     			  displayname = "Address Line 2"
+	     			 visibility = false
+     			) 
+     			district_city
+     			(
+	     			  type = district_city
+	     			  displayname = "City / District"
+     			) 
+     			state_province
+     			(
+	     			  type = state_province
+	     			  displayname = "State / Province"
+     			) 
+     			postal_Code
+     			(
+	     			  type = postal_Code
+	     			  displayname = "Postal Code"
+     			) 
+     			country
+     			(
+	     			  type = country
+	     			  displayname = "Country"
+	     			 visibility = false
+     			) 
+     			latitude
+     			(
+	     			  type = latitude
+	     			  displayname = "latitude"
+	     			 visibility = false
+     			) 
+     			longitude
+     			(
+	     			  type = longitude
+	     			  displayname = "longitude"
+	     			 visibility = false
+     			) 
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			must have Items
+			(
+				type = list	
+				values  = Menus.ID
+    			displayformat = [Food_Name + " - " + Item_Price]
+				advanced field search = true
+				height = 60px
+    			description
+    			[
+    				type = tooltip
+    			 	message = "Select Items"
+    			]
+	 			row = 1
+	 			column = 1   
+				width = large
+			)
+	
+			customize
+			(
+				icon = "shopping-basket-edit"
+			)
+			actions
+			{
+				on add
+				{
+					Order_Now
+					(
+   						type = submit
+   						displayname = "Order Now"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		print template
+			{
+				invoice_template
+				{
+						displayname = "invoice template"
+						content = {"layout":"1","pageNumberOption":null,"orientation":"null","isFooterEnabled":false,"containerStyle":"","mainLayout":[{"elements":[{"type":"columns","element":{"split":"100","id":"u_elem_43530240000009537","elemStyle":"","collayouts":[{"colElements":[{"type":"text","element":{"Fields":[{"Label_Name":"ID"}],"id":"u_elem_43530140000009537","content":"<div style=\"background: rgba(0, 0, 0, 0); padding: 0px\"> \n   <h1\n      style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><font\n        style=\"font-size: 28px\"><span\n          style=\"color: rgb(0, 0, 0); font-family: Lato, Arimo, sans-serif; font-size: 28px; font-weight: 400; font-style: normal\">INVOICE FOR #ORDER<span>${ID}<\/span><span style=\"color: rgb(0, 0, 0); font-family: Lato, Arimo, sans-serif; font-size: 28px; font-weight: 400; font-style: normal\">&nbsp;<\/span>&nbsp;<\/span><\/font><\/h1> \n  <\/div>"}}]}]}},{"type":"columns","element":{"split":"100","id":"u_elem_4975002000000477","elemStyle":"","collayouts":[{"colElements":[{"type":"text","element":{"Fields":[{"Label_Name":"Name"}],"id":"u_elem_4974998000000715","content":"<div style=\"background: rgba(0, 0, 0, 0); padding: 0px\"> \n   <p\n      style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><font\n        style=\"font-size: 16px\">Dear&nbsp;<span>${Name}<\/span><span style=\"color: rgb(0, 0, 0); font-family: Lato, Arimo, sans-serif; font-size: 16px; font-weight: 400; font-style: normal\">&nbsp; thanks for ordering with us.<\/span><\/font><\/p> \n  <\/div>"}},{"id":"u_elem_129852519019415074","type":"fields","element":{"valueStyle":"width: 50%","valueTextStyle":"","fieldLayoutType":"2","labelText":"ID","wrapperStyle":"","labelStyle":"width: 50%","Label_Name":"ID","labelTextStyle":""}}]}]}},{"type":"columns","element":{"split":"100","id":"u_elem_5577344000000954","elemStyle":"","collayouts":[{"colElements":[{"id":"u_elem_129852519019423342","type":"fields","element":{"valueStyle":"width: 50%","valueTextStyle":"","fieldLayoutType":"2","labelText":"Name","wrapperStyle":"","labelStyle":"width: 50%","Label_Name":"Name","labelTextStyle":"","compFields":["prefix","first_name","last_name","suffix"]}}]}]}},{"type":"columns","element":{"split":"100","id":"u_elem_5649646000000238","elemStyle":"","collayouts":[{"colElements":[{"id":"u_elem_129852519019425165","type":"fields","element":{"valueStyle":"width: 50%","valueTextStyle":"","fieldLayoutType":"2","labelText":"Address","wrapperStyle":"","labelStyle":"width: 50%","Label_Name":"Address","labelTextStyle":"","compFields":["address_line_1","address_line_2","district_city","state_province","postal_Code","country"]}}]}]}},{"type":"columns","element":{"split":"100","id":"u_elem_5851872000000477","elemStyle":"","collayouts":[{"colElements":[{"id":"u_elem_129852519019429430","type":"lookupfields","element":{"valueStyle":"width: 50%","valueTextStyle":"","fieldLayoutType":"1","related_Form":"Menus","labelText":"Menus","wrapperStyle":"","labelStyle":"width: 50%; display: none","Label_Name":"Items","refFields":[{"fieldLayoutType":"2","labelText":"ID","Label_Name":"ID"},{"fieldLayoutType":"2","labelText":"Food Name","Label_Name":"Food_Name"},{"fieldLayoutType":"2","labelText":"Item Price","Label_Name":"Item_Price"}],"labelTextStyle":""}}]}]}},{"type":"columns","element":{"split":"100","id":"u_elem_6477388000000715","elemStyle":"","collayouts":[{"colElements":[{"type":"text","element":{"id":"u_elem_6477383000000715","fields":[],"content":"<div style=\"background: rgba(0, 0, 0, 0); padding: 0px\"> \n   <p\n      style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><font\n    style=\"font-size: 16px\">Any queries kindly do not hesitate to contact us.<\/font><\/p> \n   <p\n      style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><font\n    style=\"font-size: 16px\"><br /><\/font><\/p> \n   <p\n        style=\"color: rgb(0, 0, 0); font-style: normal; text-align: left\"><b><font\n    style=\"font-size: 16px\">Email: user@zoho.in&nbsp;<\/font><\/b><\/p> \n   <p\n        style=\"color: rgb(0, 0, 0); font-style: normal; text-align: left\"><b><font style=\"font-size: 16px\">phone number: 87785192838<\/font><\/b><\/p> \n  <\/div>"}}]}]}},{"type":"columns","element":{"split":"100","id":"u_elem_21386100000023842","elemStyle":"","collayouts":[{"colElements":[{"type":"text","element":{"id":"u_elem_213855","fields":[],"content":"<div\n    style=\"background: rgba(0, 0, 0, 0); padding: 0px; outline: none\"> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p>\n   <p\n    style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p>\n   <p style=\"color: rgb(0, 0, 0); font-weight: 400; font-style: normal; text-align: left\"><br /><\/p> \n  <\/div>"}}]}]}}],"id":1}],"resize":"a4","themeFont":"lato","templateStyle":"text-align: left; width: 793.7px; background-image: none; border: 5px solid rgb(239, 22, 22); background-color: rgb(246, 171, 171)","isHeaderEnabled":false,"version":"2"}
+				}
+			}
+		}
+		default list All_Order_Details
+		{
+			displayName = "All Order Details"
+			print template = invoice_template
+   			hide = true
+			show all rows from Order_Details    
+			(
+				Name 
+	 			(
+	      			displayformat = [first_name+""+prefix+""+last_name+""+suffix]
+	 			)
+				Email
+				Phone_Number as "Phone"
+				(
+					displayformat = plainnumber 
+					linktodial = enable
+				)
+				Address 
+	 			(
+	      			displayformat = [address_line_1+""+address_line_2+""+district_city+""+state_province+""+postal_Code+""+country]
+	      			enable = Link_to_Map,Show_As_Text
+	 			)
+				Items
+			)
+			options
+			(
+				icon = "travel-world"
+	 		)
+			quickview
+			(
+				layout
+				(
+		 			type = -1
+					datablock1
+					(
+			 			layout type = -1
+						fields
+						(
+							Name
+							Email
+							Phone_Number as "Phone"
+							Address
+							Items
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    		 			Duplicate 
+    		 			Delete 
+    	 			)
+							record
+							(
+								Edit   	   
+								Duplicate   	   
+								Delete   	   
+    						)
+    			)
+    			action
+    			(
+							on click
+							(
+								View Record   	   
+    						)
+							on right click
+							(
+								Edit   	   
+								Delete   	   
+								Duplicate   	   
+								View Record   	   
+    						)
+     			)
+			)
+			detailview
+			(
+				layout
+				(
+		 			type = 1
+					datablock1
+					(
+			 			layout type = -2
+						fields
+						(
+							Name
+							Email
+							Phone_Number as "Phone"
+							Address
+							Items
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    		 			Duplicate 
+    		 			Delete 
+    	 			)
+    			)
+			)
+		}
+	}
+	section Delivery_Personnel1
+	{
+		displayname= "Delivery Personnel"
+		icon = "shopping-delivery"
+		default list All_Delivery_Personnel1
+		{
+			displayName = "All Delivery Personnel"
+   			hide = true
+			show all rows from Delivery_Personnel1    
+			(
+				Name 
+	 			(
+	      			displayformat = [first_name+""+prefix+""+last_name+""+suffix]
+	 			)
+				Email
+				Location1 as "Location"
+				Areas_Driver_Can_Drive as "Areas Driver Can Drive"
+				Phone_Number as "Phone"
+				(
+					displayformat = plainnumber 
+					linktodial = enable
+				)
+				Type_of_Vehicle as "Type of Vehicle"
+			)
+			options
+			(
+				icon = "shopping-delivery-time"
+	 		)
+			quickview
+			(
+				layout
+				(
+		 			type = -1
+					datablock1
+					(
+			 			layout type = -1
+						fields
+						(
+							Name
+							Email
+							Location1 as "Location"
+							Areas_Driver_Can_Drive as "Areas Driver Can Drive"
+							Phone_Number as "Phone"
+							Type_of_Vehicle as "Type of Vehicle"
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    		 			Duplicate 
+    		 			Delete 
+    	 			)
+							record
+							(
+								Edit   	   
+								Duplicate   	   
+								Delete   	   
+    						)
+    			)
+    			action
+    			(
+							on click
+							(
+								View Record   	   
+    						)
+							on right click
+							(
+								Edit   	   
+								Delete   	   
+								Duplicate   	   
+								View Record   	   
+    						)
+     			)
+			)
+			detailview
+			(
+				layout
+				(
+		 			type = 1
+					datablock1
+					(
+			 			layout type = -2
+						fields
+						(
+							Name
+							Email
+							Location1 as "Location"
+							Areas_Driver_Can_Drive as "Areas Driver Can Drive"
+							Phone_Number as "Phone"
+							Type_of_Vehicle as "Type of Vehicle"
+						)
+					)
+				)
+
+				menu
+    			(
+    	 			header
+    	 			(
+    		 			Edit 
+    		 			Duplicate 
+    		 			Delete 
+    	 			)
+    			)
+			)
+		}
+		form Delivery_Personnel1
+		{
+			displayname = "Delivery Personnel"
+			captcha = true
+			success message = "Delivery Personnel Added Successfully"
+			field alignment = left
+			Section
+			(
+				type = section
+	 			row = 1
+	 			column = 0   
+				width = medium
+			)
+			must have Name
+			(
+    			type = name
+     			prefix
+     			(
+	     			 type = prefix
+	     			 displayname ="Prefix"
+	     			 visibility = false
+	     			 value = {"Mr.", "Mrs.", "Ms."}
+     			) 
+     			first_name
+     			(
+	     			 type = first_name
+	     			 displayname ="First Name"
+     			) 
+     			last_name
+     			(
+	     			 type = last_name
+	     			 displayname ="Last Name"
+     			) 
+     			suffix
+     			(
+	     			 type = suffix
+	     			 displayname ="Suffix"
+	     			 visibility = false
+     			) 
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			unique Email
+			(
+    			type = email
+				maxchar = 80
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			must have Phone_Number
+			(
+    			type = phonenumber
+				displayname = "Phone"
+	 			row = 1
+	 			column = 1   
+				width = medium
+				personal data = true
+			)
+			must have Location1
+			(
+    			type = text
+				displayname = "Location"
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			must have Areas_Driver_Can_Drive
+			(
+    			type = text
+				displayname = "Areas Driver Can Drive"
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+			must have Type_of_Vehicle
+			(
+				type = picklist
+				displayname = "Type of Vehicle"
+				maxchar = 100
+				values = {"Two Wheeler", "Four Wheeler"}
+	 			row = 1
+	 			column = 1   
+				width = medium
+			)
+	
+			customize
+			(
+				icon = "shopping-delivery"
+			)
+			actions
+			{
+				on add
+				{
+					submit
+					(
+   						type = submit
+   						displayname = "Submit"
+					)
+					reset
+					(
+   						type = reset
+   						displayname = "Reset"
+					)
+				}
+				on edit
+				{
+					update
+					(
+   						type = submit
+   						displayname = "Update"
+					)
+					cancel
+					(
+   						type = cancel
+   						displayname = "Cancel"
+					)
+				}
+			}
+		}
+	}
+
+
+
+
+		workflow
+		{
+		form
+		{
+			Send_Email_Form_Propertie as "Send Email - Form Properties"
+			{
+				type =  presuccess
+				form = Order_Details
+				on start
+				{
+					actions 
+					{
+						sendmail
+						(
+							from : "zoho.adminuserid"
+							to : "zoho.adminuserid",Email
+							subject : "ZOMATO : Order Placed Successsfully"
+							message : "<div><span style=\"font-family:Heuristica, sans-serif\" class=\"font\"><span style=\"font-size:16px\" class=\"size\"><span style=\"font-family:Heuristica, sans-serif\" class=\"font\"><span style=\"font-size:16px\" class=\"size\"><b>${Name} </b>Congratulations!!!!! y</span></span>our order of&nbsp;<b>${Items}</b> has been placed successfully.<br></span></span></div><div><span style=\"font-family:Heuristica, sans-serif\" class=\"font\"><br></span></div><div><br></div><div><span style=\"font-family:Heuristica, sans-serif\" class=\"font\"><b><span style=\"font-size:18.6667px\" class=\"size\">INVOICE FOR THE ORDER HAS BEEN ATTACHED BELOW</span></b></span><br></div><br><br>"
+							attachments : template : invoice_template as pdf
+						)
+					}
+				}
+			}
+			Send_Email_Form_Propertie1 as "Send Email - Form Properties"
+			{
+				type =  presuccess
+				form = Delivery_Personnel1
+				on start
+				{
+					actions 
+					{
+						sendmail
+						(
+							from : "zoho.adminuserid"
+							to : "zoho.adminuserid"
+							subject : "ZOMATO : application for driving"
+							message : "<div>Hello,<br><br>A new entry added in 'Delivery Personnel' form of 'ZOMATO' application. kindly check and respond to&nbsp;${Email}<br></div>"
+						)
+					}
+				}
+			}
+		}
+
+
+
+
+
+		functions
+		{
+			Order_Now as "Order Now"
+			{
+				type =  functions
+				form = Menus
+				on start
+				{
+				}
+			}
+			Buy_Now as "Buy Now"
+			{
+				type =  functions
+				form = Menus
+				on start
+				{
+					actions 
+					{
+						openURL("#Form:Order_Details","new window");
+					}
+				}
+			}
+		}
+	}
+	share_settings
+	{
+			"Read"
+			{
+				name = "Read"
+				type = Users_Permissions
+				permissions = {Chat:true, Predefined:true, ApiAccess:true, PIIAccess:true, ePHIAccess:true}
+				description = "This profile will have read permission for all components\n"
+			}
+			"Write"
+			{
+				name = "Write"
+				type = Users_Permissions
+				permissions = {Chat:true, Predefined:true, ApiAccess:true, PIIAccess:true, ePHIAccess:true}
+				description = "This profile will have write permission for all components\n"
+			}
+			"Administrator"
+			{
+				name = "Administrator"
+				type = Users_Permissions
+				permissions = {Chat:true, Predefined:true, ApiAccess:true, PIIAccess:true, ePHIAccess:true}
+				description = "This profile will have all the permissions.\n"
+			}
+			"Customer"
+			{
+				name = "Customer"
+				type = Customer_Portal
+				permissions = {Chat:true, Predefined:true, ApiAccess:true, PIIAccess:true, ePHIAccess:true}
+				description = "This is the default profile having only add and view permission.\n"
+			}
+			roles
+			{
+				"CEO"
+				{
+					description = "User belonging to this role can access data of all other users."
+				}
+			}
+	}
+
+	customize
+	{
+		
+		layout = "tab"
+		color = "black"
+		base theme = "professional"
+		new theme = 3
+		new theme color = 1
+		icons = true
+		icons style = outline
+	}
+
+
+	
+}
